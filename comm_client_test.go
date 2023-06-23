@@ -646,3 +646,32 @@ func TestCommClient_UserGetInfo(t *testing.T) {
 	t.Logf("mid: %d,name: %s,sex: %s,level: %d,sign: %s", r.MID, r.Name, r.Sex, r.Level, r.Sign)
 	t.Logf("live: %d,officialDesc: %s,nameplateName: %s,pendantName: %s,vip: %s", r.LiveRoom.LiveStatus, r.Official.Title, r.Nameplate.Name, r.Pendant.Name, r.Vip.Label.Text)
 }
+
+func TestCommClient_GetRoomList(t *testing.T) {
+	r, err := testCommClient.GetRoomList(2, 86, "", 1)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("count: %d hasMore:%v", r.Count, r.HasMore)
+	for _, l := range r.List {
+		t.Logf("%v", l)
+	}
+	for _, tag := range r.NewTags {
+		t.Logf("%v", tag)
+	}
+}
+
+func TestCommClient_GetWebAreaList(t *testing.T) {
+	r, err := testCommClient.GetWebAreaList(2)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, item := range r {
+		t.Logf("id: %d,name: %s", item.Id, item.Name)
+		for _, sub := range item.List {
+			t.Logf("%v", sub)
+		}
+	}
+}

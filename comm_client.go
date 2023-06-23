@@ -2,6 +2,7 @@ package biligo
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/golang/protobuf/proto"
 	"github.com/iyear/biligo/internal/util"
 	"github.com/iyear/biligo/proto/dm"
@@ -1333,7 +1334,6 @@ func (c *CommClient) CommentGetMain(oid int64, tp int, mode int, next int, ps in
 
 // CommentGetReply 获取指定评论和二级回复
 //
-//
 // oid: 对应类型的ID
 //
 // tp: 类型。https://github.com/SocialSisterYi/bilibili-API-collect/tree/master/comment#%E8%AF%84%E8%AE%BA%E5%8C%BA%E7%B1%BB%E5%9E%8B%E4%BB%A3%E7%A0%81
@@ -1383,4 +1383,57 @@ func (c *CommClient) UserGetInfo(mid int64) (*UserInfo, error) {
 		return nil, err
 	}
 	return r, nil
+}
+
+type GetRoomListResp struct {
+	NewTags []*TagInfo  `json:"new_tags"`
+	List    []*LiveInfo `json:"list"`
+	Count   int         `json:"count"`
+	HasMore int         `json:"has_more"`
+}
+
+// GetRoomList https://api.live.bilibili.com/xlive/web-interface/v1/second/getList?platform=web&parent_area_id=6&area_id=308&sort_type=&page=1&vajra_business_key=
+func (c *CommClient) GetRoomList(parentAreaID int, areaID int, sortType string, page int) (*GetRoomListResp, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/web-interface/v1/second/getList",
+		"GET",
+		map[string]string{
+			"platform":       "web",
+			"parent_area_id": fmt.Sprint(parentAreaID),
+			"area_id":        fmt.Sprint(areaID),
+			"sort_type":      sortType,
+			"page":           fmt.Sprint(page),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &GetRoomListResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// GetWebAreaList https://api.live.bilibili.com/xlive/web-interface/v1/index/getWebAreaList?source_id=2
+func (c *CommClient) GetWebAreaList(sourceID int64) ([]*AreaInfo, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/web-interface/v1/index/getWebAreaList",
+		"GET",
+		map[string]string{
+			"source_id": strconv.FormatInt(sourceID, 10),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := struct {
+		Data []*AreaInfo `json:"data"`
+	}{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r.Data, nil
 }

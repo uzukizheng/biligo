@@ -2048,8 +2048,8 @@ type UserInfo struct {
 	// 只能查看自己的
 	//
 	// 默认为0
-	Coins     float32  `json:"coins"`
-	FansBadge bool `json:"fans_badge"` // 是否具有粉丝勋章 false：无 true：有
+	Coins     float32 `json:"coins"`
+	FansBadge bool    `json:"fans_badge"` // 是否具有粉丝勋章 false：无 true：有
 	Official  struct {
 		// 认证类型
 		//
@@ -2161,4 +2161,93 @@ type UserInfo struct {
 		UserUpgradeStatus int  `json:"user_upgrade_status"` //
 		ShowUpgradeWindow bool `json:"show_upgrade_window"` //
 	} `json:"series"` //
+}
+
+// AreaInfo 主分区信息
+type AreaInfo struct {
+	Id   int           `json:"id"`
+	Name string        `json:"name"`
+	List []SubAreaInfo `json:"list"`
+}
+
+// SubAreaInfo 子分区信息
+type SubAreaInfo struct {
+	Id         string `json:"id"`
+	ParentId   string `json:"parent_id"`
+	ParentName string `json:"parent_name"`
+	OldAreaId  string `json:"old_area_id"`
+	Name       string `json:"name"`
+	Pinyin     string `json:"pinyin"`
+	ActId      string `json:"act_id"`
+	HotStatus  int    `json:"hot_status"`
+	PkStatus   string `json:"pk_status"`
+	LockStatus string `json:"lock_status"`
+	Pic        string `json:"pic"`
+	AreaType   int    `json:"area_type"`
+}
+
+type TagInfo struct {
+	Id       int           `json:"id"`
+	Name     string        `json:"name"`
+	Icon     string        `json:"icon"`
+	SortType string        `json:"sort_type"`
+	Type     int           `json:"type"`
+	Sub      []interface{} `json:"sub"`
+	HeroList []interface{} `json:"hero_list"`
+	Sort     int           `json:"sort"`
+}
+
+type LiveInfo struct {
+	Roomid           int    `json:"roomid"`
+	Uid              int    `json:"uid"`
+	Title            string `json:"title"`
+	Uname            string `json:"uname"`
+	Online           int    `json:"online"`
+	UserCover        string `json:"user_cover"`
+	UserCoverFlag    int    `json:"user_cover_flag"`
+	SystemCover      string `json:"system_cover"`
+	Cover            string `json:"cover"`
+	ShowCover        string `json:"show_cover"`
+	Link             string `json:"link"`
+	Face             string `json:"face"`
+	ParentId         int    `json:"parent_id"`
+	ParentName       string `json:"parent_name"`
+	AreaId           int    `json:"area_id"`
+	AreaName         string `json:"area_name"`
+	AreaV2ParentId   int    `json:"area_v2_parent_id"`
+	AreaV2ParentName string `json:"area_v2_parent_name"`
+	AreaV2Id         int    `json:"area_v2_id"`
+	AreaV2Name       string `json:"area_v2_name"`
+	SessionId        string `json:"session_id"`
+	GroupId          int    `json:"group_id"`
+	ShowCallback     string `json:"show_callback"`
+	ClickCallback    string `json:"click_callback"`
+	WebPendent       string `json:"web_pendent"`
+	PkId             int    `json:"pk_id"`
+	PendantInfo      struct {
+	} `json:"pendant_info"`
+	Verify struct {
+		Role int    `json:"role"`
+		Desc string `json:"desc"`
+		Type int    `json:"type"`
+	} `json:"verify"`
+	HeadBox *struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+		Desc  string `json:"desc"`
+	} `json:"head_box"`
+	HeadBoxType int `json:"head_box_type"`
+	IsAutoPlay  int `json:"is_auto_play"`
+	Flag        int `json:"flag"`
+	WatchedShow struct {
+		Switch       bool   `json:"switch"`
+		Num          int    `json:"num"`
+		TextSmall    string `json:"text_small"`
+		TextLarge    string `json:"text_large"`
+		Icon         string `json:"icon"`
+		IconLocation int    `json:"icon_location"`
+		IconWeb      string `json:"icon_web"`
+	} `json:"watched_show"`
+	IsNft    int    `json:"is_nft"`
+	NftDmark string `json:"nft_dmark"`
 }
