@@ -2165,9 +2165,9 @@ type UserInfo struct {
 
 // AreaInfo 主分区信息
 type AreaInfo struct {
-	Id   int           `json:"id"`
-	Name string        `json:"name"`
-	List []SubAreaInfo `json:"list"`
+	Id   int            `json:"id"`
+	Name string         `json:"name"`
+	List []*SubAreaInfo `json:"list"`
 }
 
 // SubAreaInfo 子分区信息

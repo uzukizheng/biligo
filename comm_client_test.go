@@ -648,7 +648,7 @@ func TestCommClient_UserGetInfo(t *testing.T) {
 }
 
 func TestCommClient_GetRoomList(t *testing.T) {
-	r, err := testCommClient.GetRoomList(2, 86, "", 1)
+	r, err := testCommClient.GetRoomList("2", "86", "", 1)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()

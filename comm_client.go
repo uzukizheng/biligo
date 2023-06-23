@@ -1393,15 +1393,15 @@ type GetRoomListResp struct {
 }
 
 // GetRoomList https://api.live.bilibili.com/xlive/web-interface/v1/second/getList?platform=web&parent_area_id=6&area_id=308&sort_type=&page=1&vajra_business_key=
-func (c *CommClient) GetRoomList(parentAreaID int, areaID int, sortType string, page int) (*GetRoomListResp, error) {
+func (c *CommClient) GetRoomList(parentAreaID, areaID, sortType string, page int) (*GetRoomListResp, error) {
 	resp, err := c.RawParse(
 		BiliLiveURL,
 		"xlive/web-interface/v1/second/getList",
 		"GET",
 		map[string]string{
 			"platform":       "web",
-			"parent_area_id": fmt.Sprint(parentAreaID),
-			"area_id":        fmt.Sprint(areaID),
+			"parent_area_id": parentAreaID,
+			"area_id":        areaID,
 			"sort_type":      sortType,
 			"page":           fmt.Sprint(page),
 		},
