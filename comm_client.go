@@ -6,8 +6,11 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/iyear/biligo/internal/util"
 	"github.com/iyear/biligo/proto/dm"
+	"github.com/pkg/errors"
+	qrcode "github.com/skip2/go-qrcode"
 	"github.com/tidwall/gjson"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -1436,4 +1439,257 @@ func (c *CommClient) GetWebAreaList(sourceID int64) ([]*AreaInfo, error) {
 		return nil, err
 	}
 	return r.Data, nil
+}
+
+// WebQRCodeGenerateResp 二维码链接
+type WebQRCodeGenerateResp struct {
+	Url       string `json:"url"`
+	QrcodeKey string `json:"qrcode_key"`
+}
+
+// WebQRCodeGenerate 网页版获取二维码链接
+func (c *CommClient) WebQRCodeGenerate() (*WebQRCodeGenerateResp, error) {
+	resp, err := c.RawParse(
+		BiliPassportURL,
+		"x/passport-login/web/qrcode/generate",
+		"GET",
+		map[string]string{
+			"source": "main-fe-header",
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &WebQRCodeGenerateResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// WebQRCodePoolResp 二维码结果
+type WebQRCodePoolResp struct {
+	Url          string `json:"url"`
+	RefreshToken string `json:"refresh_token"`
+	Timestamp    int64  `json:"timestamp"` // 毫秒
+	Code         int    `json:"code"`
+	Message      string `json:"message"`
+}
+
+// GetCookieAuth 获取登录信息
+func (resp *WebQRCodePoolResp) GetCookieAuth() *CookieAuth {
+	auth := &CookieAuth{}
+	u, err := url.Parse(resp.Url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for k, v := range u.Query() {
+		fmt.Println(k, v)
+	}
+	return auth
+}
+
+// WebQRCodePool 网页版轮询二维码返回结果
+func (c *CommClient) WebQRCodePool(qrcodeKey string) (*WebQRCodePoolResp, error) {
+	resp, err := c.RawParse(
+		BiliPassportURL,
+		"x/passport-login/web/qrcode/poll",
+		"GET",
+		map[string]string{
+			"qrcode_key": qrcodeKey,
+			"source":     "main-fe-header",
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &WebQRCodePoolResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+type QRCodeGetLoginURLResp struct {
+	Url      string `json:"url"`
+	OauthKey string `json:"oauthKey"`
+}
+
+func (resp *QRCodeGetLoginURLResp) ToQRCode() {
+	err := qrcode.WriteFile(resp.Url, qrcode.Medium, 256, "qr.png")
+	if err != nil {
+		panic(err)
+	}
+}
+
+// QRCodeGetLoginURL 网页版获取二维码链接
+func (c *CommClient) QRCodeGetLoginURL() (*QRCodeGetLoginURLResp, error) {
+	resp, err := c.RawParse(
+		BiliPassportURL,
+		"qrcode/getLoginUrl",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &QRCodeGetLoginURLResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+// QRCodeGetLoginInfoResp 返回值
+type QRCodeGetLoginInfoResp struct {
+	Url          string `json:"url"`
+	RefreshToken string `json:"refresh_token"`
+	Timestamp    int64  `json:"timestamp"`
+}
+
+// GetCookieAuth 获取登录信息
+func (resp *QRCodeGetLoginInfoResp) GetCookieAuth() *CookieAuth {
+	auth := &CookieAuth{}
+	u, err := url.Parse(resp.Url)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for k, v := range u.Query() {
+		fmt.Println(k, v)
+	}
+	return auth
+}
+
+// QRCodeGetLoginInfo 客户端获取二维码结果
+func (c *CommClient) QRCodeGetLoginInfo(oauthKey string) (*QRCodeGetLoginInfoResp, error) {
+	resp, err := c.RawParse(
+		BiliPassportURL,
+		"qrcode/getLoginInfo",
+		"POST",
+		map[string]string{"oauthKey": oauthKey},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	dataInt, _ := strconv.ParseInt(string(resp.Data), 10, 64)
+
+	switch dataInt {
+	case -2:
+		return nil, errors.New("Can't Match oauthKey~")
+	case -4:
+		return nil, errors.New("Can't scan~")
+	case -5:
+		return nil, errors.New("Can't confirm~")
+	default:
+	}
+
+	r := &QRCodeGetLoginInfoResp{}
+	//fmt.Println(string(resp.Data))
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+type GetPopularAnchorRankResp struct {
+	List []struct {
+		Uid             int64  `json:"uid"`
+		Uname           string `json:"uname"`
+		Face            string `json:"face"`
+		Rank            int    `json:"rank"`
+		Score           int    `json:"score"`
+		RoomId          int    `json:"room_id"`
+		LiveStatus      int    `json:"live_status"`
+		Verify          int    `json:"verify"`
+		UserNum         int    `json:"user_num"`
+		LotStatus       int    `json:"lot_status"`
+		RedPocketStatus int    `json:"red_pocket_status"`
+		RoomLink        string `json:"room_link"`
+	} `json:"list"`
+}
+
+func (c *CommClient) GetPopularAnchorRank() (*GetPopularAnchorRankResp, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/general-interface/v1/rank/getPopularAnchorRank",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &GetPopularAnchorRankResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+type GetAreaRankInfoResp struct {
+	Items []struct {
+		Ruid            int64  `json:"ruid"`
+		RoomId          int    `json:"room_id"`
+		Uname           string `json:"uname"`
+		Face            string `json:"face"`
+		Rank            int    `json:"rank"`
+		Score           int    `json:"score"`
+		Verify          int    `json:"verify"`
+		LiveStatus      int    `json:"live_status"`
+		LotStatus       int    `json:"lot_status"`
+		RedPocketStatus int    `json:"red_pocket_status"`
+	} `json:"items"`
+	Owner struct {
+		Uid          int    `json:"uid"`
+		Ruid         int    `json:"ruid"`
+		IsFollow     bool   `json:"is_follow"`
+		RoomId       int    `json:"room_id"`
+		Uname        string `json:"uname"`
+		Face         string `json:"face"`
+		Rank         int    `json:"rank"`
+		Score        int    `json:"score"`
+		Verify       int    `json:"verify"`
+		LiveStatus   int    `json:"live_status"`
+		DiffScore    int    `json:"diff_score"`
+		AreaId       int    `json:"area_id"`
+		AreaParentId int    `json:"area_parent_id"`
+	} `json:"owner"`
+	Conf struct {
+		Id          int    `json:"id"`
+		RankType    int    `json:"rank_type"`
+		FeatureType int    `json:"feature_type"`
+		RankId      int    `json:"rank_id"`
+		RankName    string `json:"rank_name"`
+		IconUrl     struct {
+			Blue string `json:"blue"`
+			Pink string `json:"pink"`
+			Grey string `json:"grey"`
+		} `json:"icon_url"`
+		CycleType      int `json:"cycle_type"`
+		ItemDisplayNum int `json:"item_display_num"`
+		Rules          []struct {
+			Title   string `json:"title"`
+			Content string `json:"content"`
+		} `json:"rules"`
+	} `json:"conf"`
+}
+
+func (c *CommClient) GetAreaRankInfo(ruid, confID string) (*GetAreaRankInfoResp, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/general-interface/v1/rank/getAreaRankInfo",
+		"GET",
+		map[string]string{
+			"ruid":    ruid,
+			"conf_id": confID,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &GetAreaRankInfoResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
 }

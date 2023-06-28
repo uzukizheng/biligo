@@ -1,7 +1,9 @@
 package biligo
 
 import (
+	"fmt"
 	"testing"
+	"time"
 )
 
 var testCommClient = newTestCommClient()
@@ -673,5 +675,76 @@ func TestCommClient_GetWebAreaList(t *testing.T) {
 		for _, sub := range item.List {
 			t.Logf("%v", sub)
 		}
+	}
+}
+
+func TestWebLogin(t *testing.T) {
+	gResp, err := testCommClient.WebQRCodeGenerate()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("url: %s", gResp.Url)
+	for i := 0; i < 60; i++ {
+		pResp, err := testCommClient.WebQRCodePool(gResp.QrcodeKey)
+		if err != nil {
+			t.Error(err)
+			t.FailNow()
+		}
+		t.Logf("%v", pResp.GetCookieAuth())
+		time.Sleep(time.Second * 5)
+	}
+}
+
+func TestLogin(t *testing.T) {
+	gResp, err := testCommClient.QRCodeGetLoginURL()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	gResp.ToQRCode()
+	t.Logf("url: %s", gResp.Url)
+	for i := 0; i < 60; i++ {
+		iResp, err := testCommClient.QRCodeGetLoginInfo(gResp.OauthKey)
+		if err != nil {
+			t.Error(err)
+		} else {
+			t.Log(iResp.GetCookieAuth())
+			break
+		}
+		//t.Logf("%v", pResp.GetCookieAuth())
+		time.Sleep(time.Second * 5)
+	}
+}
+
+func TestGetPopularAnchorRank(t *testing.T) {
+	gResp, err := testCommClient.GetPopularAnchorRank()
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, item := range gResp.List {
+		t.Logf("%v", item)
+	}
+}
+
+func TestGetAreaRankInfo(t *testing.T) {
+	gResp, err := testCommClient.GetAreaRankInfo("54370", "16")
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Log(gResp.Owner)
+	t.Log(gResp.Conf)
+	for _, item := range gResp.Items {
+		t.Logf("%v", item)
+	}
+	for i := 16; i <= 25; i++ {
+		gResp, err := testCommClient.GetAreaRankInfo("54370", fmt.Sprint(i))
+		if err != nil {
+			t.Error(err)
+			t.FailNow()
+		}
+		t.Log(i, len(gResp.Items))
 	}
 }
