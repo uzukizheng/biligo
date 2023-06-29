@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	qrcode "github.com/skip2/go-qrcode"
 	"github.com/tidwall/gjson"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -1481,10 +1482,21 @@ func (resp *WebQRCodePoolResp) GetCookieAuth() *CookieAuth {
 	auth := &CookieAuth{}
 	u, err := url.Parse(resp.Url)
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
+		return nil
 	}
 	for k, v := range u.Query() {
-		fmt.Println(k, v)
+		switch k {
+		case "DedeUserID":
+			auth.DedeUserID = v[0]
+		case "DedeUserID__ckMd5":
+			auth.DedeUserIDCkMd5 = v[0]
+		case "SESSDATA":
+			auth.SESSDATA = v[0]
+		case "bili_jct":
+			auth.BiliJCT = v[0]
+		default:
+		}
 	}
 	return auth
 }
@@ -1552,10 +1564,21 @@ func (resp *QRCodeGetLoginInfoResp) GetCookieAuth() *CookieAuth {
 	auth := &CookieAuth{}
 	u, err := url.Parse(resp.Url)
 	if err != nil {
-		fmt.Println(err)
+		log.Print(err)
+		return nil
 	}
 	for k, v := range u.Query() {
-		fmt.Println(k, v)
+		switch k {
+		case "DedeUserID":
+			auth.DedeUserID = v[0]
+		case "DedeUserID__ckMd5":
+			auth.DedeUserIDCkMd5 = v[0]
+		case "SESSDATA":
+			auth.SESSDATA = v[0]
+		case "bili_jct":
+			auth.BiliJCT = v[0]
+		default:
+		}
 	}
 	return auth
 }
