@@ -2851,7 +2851,7 @@ type MyInfoResp struct {
 
 func (b *BiliClient) MyInfo() (*MyInfoResp, error) {
 	resp, err := b.RawParse(
-		BiliLiveURL,
+		BiliApiURL,
 		"x/space/v2/myinfo",
 		"GET",
 		map[string]string{},
