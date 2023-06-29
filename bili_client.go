@@ -2849,7 +2849,7 @@ type MyInfoResp struct {
 	Follower  int     `json:"follower"`
 }
 
-func (b *BiliClient) MyInfo() (*GetAreaRankInfoResp, error) {
+func (b *BiliClient) MyInfo() (*MyInfoResp, error) {
 	resp, err := b.RawParse(
 		BiliLiveURL,
 		"x/space/v2/myinfo",
@@ -2859,7 +2859,7 @@ func (b *BiliClient) MyInfo() (*GetAreaRankInfoResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	r := &GetAreaRankInfoResp{}
+	r := &MyInfoResp{}
 	if err = json.Unmarshal(resp.Data, r); err != nil {
 		return nil, err
 	}
