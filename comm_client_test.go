@@ -748,3 +748,12 @@ func TestGetAreaRankInfo(t *testing.T) {
 		t.Log(i, len(gResp.Items))
 	}
 }
+
+func TestGetInfoByRoom(t *testing.T) {
+	gResp, err := testCommClient.GetInfoByRoom(23088701)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Log(gResp.AnchorInfo.BaseInfo.Uname, gResp.AnchorInfo.BaseInfo.Face, gResp.RoomInfo.Title)
+}
