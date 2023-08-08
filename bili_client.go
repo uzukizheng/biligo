@@ -2458,7 +2458,6 @@ func (b *BiliClient) SendMessage(uid int64, content, devID string) (*SendMessage
 	if err = json.Unmarshal(resp.Data, &r); err != nil {
 		return nil, err
 	}
-
 	return r, nil
 }
 
