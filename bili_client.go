@@ -7,8 +7,10 @@ import (
 	"github.com/iyear/biligo/internal/util"
 	"github.com/iyear/biligo/proto/dm"
 	"github.com/pkg/errors"
+	"github.com/satori/go.uuid"
 	"github.com/tidwall/gjson"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/url"
@@ -45,6 +47,8 @@ type BiliSetting struct {
 	//
 	// 默认Chrome随机Agent
 	UserAgent string
+
+	Logger *log.Logger
 }
 
 // NewBiliClient
@@ -2412,6 +2416,45 @@ func (b *BiliClient) DynaUploadPics(pics []io.Reader) ([]*DynaUploadPic, error) 
 		results = append(results, r)
 	}
 	return results, nil
+}
+
+type SendMessageResp struct {
+	MsgKey      int64  `json:"msg_key"`
+	MsgContent  string `json:"msg_content"`
+	KeyHitInfos struct {
+	} `json:"key_hit_infos"`
+}
+
+// SendMessage 发文字消息
+func (b *BiliClient) SendMessage(uid int64, content string) (*SendMessageResp, error) {
+	resp, err := b.UploadParse(
+		BiliVcURL,
+		"web_im/v1/web_im/send_msg",
+		map[string]string{
+			"msg[sender_uid]":       b.auth.DedeUserID,
+			"msg[receiver_id]":      fmt.Sprint(uid),
+			"msg[receiver_type]":    "1",
+			"msg[msg_type]":         "1",
+			"msg[msg_status]":       "0",
+			"msg[content]":          `{"content":"` + content + `"}`,
+			"msg[timestamp]":        fmt.Sprint(time.Now().Unix()),
+			"msg[new_face_version]": "0",
+			"msg[dev_id]":           uuid.NewV4().String(),
+			"from_firework":         "0",
+			"build":                 "0",
+			"mobi_app":              "web",
+		},
+		[]*FileUpload{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &SendMessageResp{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 // DynaCreateDraw 创建图片动态

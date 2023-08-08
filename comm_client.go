@@ -34,6 +34,9 @@ type CommSetting struct {
 	//
 	// 默认Chrome随机Agent
 	UserAgent string
+
+	// Logger ...
+	Logger *log.Logger
 }
 
 // NewCommClient
@@ -45,6 +48,7 @@ func NewCommClient(setting *CommSetting) *CommClient {
 		DebugMode: setting.DebugMode,
 		UserAgent: setting.UserAgent,
 		Prefix:    "CommClient ",
+		Logger:    setting.Logger,
 	})}
 }
 

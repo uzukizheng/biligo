@@ -22,6 +22,7 @@ type baseClient struct {
 	ua     string
 	logger *log.Logger
 }
+
 type baseSetting struct {
 	// 自定义http client
 	//
@@ -37,6 +38,8 @@ type baseSetting struct {
 	UserAgent string
 	// Logger 的输出前缀，区分Client
 	Prefix string
+	// Logger 输出
+	Logger *log.Logger
 }
 
 func newBaseClient(setting *baseSetting) *baseClient {
@@ -50,12 +53,14 @@ func newBaseClient(setting *baseSetting) *baseClient {
 		rand.Seed(time.Now().UnixNano())
 		ua = userAgent[rand.Intn(len(userAgent))]
 	}
-
+	if setting.Logger == nil {
+		setting.Logger = log.New(os.Stdout, setting.Prefix, log.LstdFlags)
+	}
 	return &baseClient{
 		debug:  setting.DebugMode,
 		client: client,
 		ua:     ua,
-		logger: log.New(os.Stdout, setting.Prefix, log.LstdFlags),
+		logger: setting.Logger,
 	}
 }
 
