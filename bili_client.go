@@ -149,7 +149,9 @@ func (b *BiliClient) RawParse(base, endpoint, method string, payload map[string]
 // base末尾带/
 func (b *BiliClient) Upload(base, endpoint string, payload map[string]string, files []*FileUpload) ([]byte, error) {
 	raw, err := b.upload(base, endpoint, payload, files, func(m *multipart.Writer) error {
-		return m.WriteField("csrf", b.auth.BiliJCT)
+		m.WriteField("csrf", b.auth.BiliJCT)
+		m.WriteField("csrf_token", b.auth.BiliJCT)
+		return nil
 	}, func(r *http.Request) {
 		r.Header.Add("Cookie", fmt.Sprintf("DedeUserID=%s;SESSDATA=%s;DedeUserID__ckMd5=%s",
 			b.auth.DedeUserID, b.auth.SESSDATA, b.auth.DedeUserIDCkMd5))
@@ -2426,7 +2428,10 @@ type SendMessageResp struct {
 }
 
 // SendMessage 发文字消息
-func (b *BiliClient) SendMessage(uid int64, content string) (*SendMessageResp, error) {
+func (b *BiliClient) SendMessage(uid int64, content, devID string) (*SendMessageResp, error) {
+	if devID == "" {
+		devID = uuid.NewV4().String()
+	}
 	resp, err := b.UploadParse(
 		BiliVcURL,
 		"web_im/v1/web_im/send_msg",
@@ -2439,7 +2444,7 @@ func (b *BiliClient) SendMessage(uid int64, content string) (*SendMessageResp, e
 			"msg[content]":          `{"content":"` + content + `"}`,
 			"msg[timestamp]":        fmt.Sprint(time.Now().Unix()),
 			"msg[new_face_version]": "0",
-			"msg[dev_id]":           uuid.NewV4().String(),
+			"msg[dev_id]":           devID,
 			"from_firework":         "0",
 			"build":                 "0",
 			"mobi_app":              "web",
