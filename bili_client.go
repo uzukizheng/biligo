@@ -66,6 +66,7 @@ func NewBiliClient(setting *BiliSetting) (*BiliClient, error) {
 			DebugMode: setting.DebugMode,
 			UserAgent: setting.UserAgent,
 			Prefix:    "BiliClient ",
+			Logger:    setting.Logger,
 		}),
 	}
 
