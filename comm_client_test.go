@@ -755,5 +755,19 @@ func TestGetInfoByRoom(t *testing.T) {
 		t.Error(err)
 		t.FailNow()
 	}
-	t.Log(gResp.AnchorInfo.BaseInfo.Uname, gResp.AnchorInfo.BaseInfo.Face, gResp.RoomInfo.Title)
+	t.Log(gResp.AnchorInfo.BaseInfo.Uname, gResp.AnchorInfo.BaseInfo.Face, gResp.RoomInfo.Title, gResp.GuardInfo.Count)
+}
+
+func TestBiliClient_GetOnlineGoldRank(t *testing.T) {
+	r, err := testCommClient.GetOnlineGoldRank(24682725, 1860771, 1, 50)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("resp: %+v", r)
+	var score = 0
+	for _, item := range r.OnlineRankItem {
+		score += item.Score
+	}
+	t.Logf("total: %d,score: %d", r.OnlineNum, score)
 }

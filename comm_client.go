@@ -2168,3 +2168,63 @@ func (c *CommClient) GetInfoByRoom(roomID int64) (*GetInfoByRoomResp, error) {
 	}
 	return r, nil
 }
+
+type GetOnlineGoldRankResp struct {
+	OnlineNum      int `json:"onlineNum"`
+	OnlineRankItem []struct {
+		UserRank  int    `json:"userRank"`
+		Uid       int    `json:"uid"`
+		Name      string `json:"name"`
+		Face      string `json:"face"`
+		Score     int    `json:"score"`
+		MedalInfo *struct {
+			GuardLevel       int    `json:"guardLevel"`
+			MedalColorStart  int    `json:"medalColorStart"`
+			MedalColorEnd    int    `json:"medalColorEnd"`
+			MedalColorBorder int    `json:"medalColorBorder"`
+			MedalName        string `json:"medalName"`
+			Level            int    `json:"level"`
+			TargetId         int64  `json:"targetId"`
+			IsLight          int    `json:"isLight"`
+		} `json:"medalInfo"`
+		GuardLevel  int `json:"guard_level"`
+		WealthLevel int `json:"wealth_level"`
+	} `json:"OnlineRankItem"`
+	OwnInfo struct {
+		Uid         int    `json:"uid"`
+		Name        string `json:"name"`
+		Face        string `json:"face"`
+		Rank        int    `json:"rank"`
+		NeedScore   int    `json:"needScore"`
+		Score       int    `json:"score"`
+		GuardLevel  int    `json:"guard_level"`
+		WealthLevel int    `json:"wealth_level"`
+	} `json:"ownInfo"`
+	TipsText  string `json:"tips_text"`
+	ValueText string `json:"value_text"`
+	Ab        struct {
+		GuardAccompanyList int `json:"guard_accompany_list"`
+	} `json:"ab"`
+}
+
+func (c *CommClient) GetOnlineGoldRank(rUID, roomID, page, pageSize int64) (*GetOnlineGoldRankResp, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/general-interface/v1/rank/getOnlineGoldRank",
+		"GET",
+		map[string]string{
+			"ruid":     fmt.Sprint(rUID),
+			"roomId":   fmt.Sprint(roomID),
+			"page":     fmt.Sprint(page),
+			"pageSize": fmt.Sprint(pageSize),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &GetOnlineGoldRankResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
