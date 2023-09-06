@@ -771,3 +771,13 @@ func TestBiliClient_GetOnlineGoldRank(t *testing.T) {
 	}
 	t.Logf("total: %d,score: %d", r.OnlineNum, score)
 }
+
+func TestBiliClient_GetUserEx(t *testing.T) {
+	r, err := testCommClient.GetUserEx(920270)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	t.Logf("resp: %+v", r)
+	t.Logf("level: %d", r.Data.User.UserLevel)
+}

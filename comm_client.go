@@ -9,6 +9,7 @@ import (
 	"github.com/pkg/errors"
 	qrcode "github.com/skip2/go-qrcode"
 	"github.com/tidwall/gjson"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -2224,6 +2225,57 @@ func (c *CommClient) GetOnlineGoldRank(rUID, roomID, page, pageSize int64) (*Get
 	}
 	r := &GetOnlineGoldRankResp{}
 	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+type GetUserExResp struct {
+	Code    int    `json:"code"`
+	Msg     string `json:"msg"`
+	Message string `json:"message"`
+	Data    struct {
+		User struct {
+			Role            int `json:"role"`
+			UserLevel       int `json:"user_level"`
+			MasterLevel     int `json:"master_level"`
+			NextMasterLevel int `json:"next_master_level"`
+			NeedMasterScore int `json:"need_master_score"`
+			MasterRank      int `json:"master_rank"`
+			Verify          int `json:"verify"`
+		} `json:"user"`
+		Feed struct {
+			FansCount   int `json:"fans_count"`
+			FeedCount   int `json:"feed_count"`
+			IsFollowed  int `json:"is_followed"`
+			IsFollowing int `json:"is_following"`
+		} `json:"feed"`
+		Room struct {
+			LiveStatus  int    `json:"live_status"`
+			RoomId      int    `json:"room_id"`
+			ShortRoomId int    `json:"short_room_id"`
+			Title       string `json:"title"`
+			Cover       string `json:"cover"`
+			Keyframe    string `json:"keyframe"`
+			Online      int    `json:"online"`
+			RoomLink    string `json:"room_link"`
+		} `json:"room"`
+		Uid string `json:"uid"`
+	} `json:"data"`
+}
+
+func (c *CommClient) GetUserEx(uid int64) (*GetUserExResp, error) {
+	resp, err := http.Get("https://api.vc.bilibili.com/user_ex/v1/user/detail?uid=" + fmt.Sprint(uid) + "&user[]=role&user[]=level&room[]=live_status&room[]=room_link&feed[]=fans_count&feed[]=feed_count&feed[]=is_followed&feed[]=is_following&platform=pc")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	bytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	r := &GetUserExResp{}
+	if err = json.Unmarshal(bytes, r); err != nil {
 		return nil, err
 	}
 	return r, nil
