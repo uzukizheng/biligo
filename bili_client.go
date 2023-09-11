@@ -30,6 +30,7 @@ type CookieAuth struct {
 	DedeUserIDCkMd5 string // DedeUserID__ckMd5
 	SESSDATA        string // SESSDATA
 	BiliJCT         string // bili_jct
+	BUVID3          string // buvid3
 }
 
 type BiliSetting struct {
@@ -3011,6 +3012,28 @@ func (b *BiliClient) GuardTabTopList(roomID, rUID, page, pageSize int64) (*Guard
 		return nil, err
 	}
 	r := &GuardTabTopListResp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
+type FingerSpiResp struct {
+	B3 string `json:"b_3"`
+	B4 string `json:"b_4"`
+}
+
+func (b *BiliClient) FingerSpi() (*FingerSpiResp, error) {
+	resp, err := b.RawParse(
+		BiliApiURL,
+		"x/frontend/finger/spi",
+		"GET",
+		map[string]string{},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &FingerSpiResp{}
 	if err = json.Unmarshal(resp.Data, r); err != nil {
 		return nil, err
 	}
