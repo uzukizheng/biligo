@@ -3039,3 +3039,28 @@ func (b *BiliClient) FingerSpi() (*FingerSpiResp, error) {
 	}
 	return r, nil
 }
+
+type LikeReportV3Response struct {
+}
+
+func (b *BiliClient) LikeReportV3(clickTime, roomID, uid, anchorID int64) error {
+	resp, err := b.RawParse(
+		BiliLiveURL,
+		"xlive/app-ucenter/v1/like_info_v3/like/likeReportV3",
+		"POST",
+		map[string]string{
+			"click_time": strconv.FormatInt(clickTime, 10),
+			"room_id":    strconv.FormatInt(roomID, 10),
+			"uid":        strconv.FormatInt(uid, 10),
+			"anchor_id":  strconv.FormatInt(anchorID, 10),
+		},
+	)
+	if err != nil {
+		return err
+	}
+	ret := LikeReportV3Response{}
+	if err = json.Unmarshal(resp.Data, &ret); err != nil {
+		return err
+	}
+	return nil
+}
