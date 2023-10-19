@@ -3064,3 +3064,29 @@ func (b *BiliClient) LikeReportV3(clickTime, roomID, uid, anchorID int64) error 
 	}
 	return nil
 }
+
+// LiveSendGold 送礼物
+func (b *BiliClient) LiveSendGold(uid, gift_id, ruid, send_ruid, gift_num, biz_id, price int64) error {
+	_, err := b.RawParse(
+		BiliLiveURL,
+		"xlive/revenue/v1/gift/sendGold",
+		"POST",
+		map[string]string{
+			"uid":           fmt.Sprint(uid),
+			"gift_id":       fmt.Sprint(gift_id),
+			"ruid":          fmt.Sprint(ruid),
+			"send_ruid":     fmt.Sprint(send_ruid),
+			"gift_num":      fmt.Sprint(gift_num),
+			"bag_id":        "0",
+			"biz_id":        fmt.Sprint(biz_id),
+			"storm_beat_id": "0",
+			"price":         fmt.Sprint(price),
+			"coin_type":     "gold",
+			"platform":      "pc",
+			"biz_code":      "Live",
+			"metadata":      "",
+			"rnd":           strconv.FormatInt(time.Now().Unix(), 10),
+		},
+	)
+	return err
+}
