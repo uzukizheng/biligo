@@ -3090,3 +3090,65 @@ func (b *BiliClient) LiveSendGold(uid, gift_id, ruid, send_ruid, gift_num, biz_i
 	)
 	return err
 }
+
+type QueryContributionRankResp struct {
+	Count int `json:"count"`
+	Item  []struct {
+		Uid       int64  `json:"uid"`
+		Name      string `json:"name"`
+		Face      string `json:"face"`
+		Rank      int    `json:"rank"`
+		Score     int    `json:"score"`
+		MedalInfo *struct {
+			GuardLevel       int    `json:"guard_level"`
+			MedalColorStart  int    `json:"medal_color_start"`
+			MedalColorEnd    int    `json:"medal_color_end"`
+			MedalColorBorder int    `json:"medal_color_border"`
+			MedalName        string `json:"medal_name"`
+			Level            int    `json:"level"`
+			TargetId         int64  `json:"target_id"`
+			IsLight          int    `json:"is_light"`
+		} `json:"medal_info"`
+		GuardLevel  int `json:"guard_level"`
+		WealthLevel int `json:"wealth_level"`
+	} `json:"item"`
+	OwnInfo struct {
+		Uid         int         `json:"uid"`
+		Name        string      `json:"name"`
+		Face        string      `json:"face"`
+		Rank        int         `json:"rank"`
+		Score       int         `json:"score"`
+		RankText    string      `json:"rank_text"`
+		NeedScore   int         `json:"need_score"`
+		MedalInfo   interface{} `json:"medal_info"`
+		GuardLevel  int         `json:"guard_level"`
+		WealthLevel int         `json:"wealth_level"`
+		ScoreLead   int         `json:"score_lead"`
+		ScoreBehind int         `json:"score_behind"`
+	} `json:"own_info"`
+	TipsText    string `json:"tips_text"`
+	CountFormat string `json:"count_format"`
+	DescFormat  string `json:"desc_format"`
+	Config      struct {
+		DeadlineTs int64  `json:"deadline_ts"`
+		ValueText  string `json:"value_text"`
+	} `json:"config"`
+}
+
+// QueryContributionRank 查贡献
+func (b *BiliClient) QueryContributionRank(uid, room_id int64, typ, sw string) error {
+	_, err := b.RawParse(
+		BiliLiveURL,
+		"xlive/general-interface/v1/rank/queryContributionRank",
+		"GET",
+		map[string]string{
+			"ruid":      fmt.Sprint(uid),
+			"room_id":   fmt.Sprint(room_id),
+			"page":      "1",
+			"page_size": "200",
+			"type":      typ,
+			"switch":    sw,
+		},
+	)
+	return err
+}
