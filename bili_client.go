@@ -3136,8 +3136,8 @@ type QueryContributionRankResp struct {
 }
 
 // QueryContributionRank 查贡献
-func (b *BiliClient) QueryContributionRank(uid, room_id int64, typ, sw string) error {
-	_, err := b.RawParse(
+func (b *BiliClient) QueryContributionRank(uid, room_id int64, typ, sw string) (*QueryContributionRankResp, error) {
+	resp, err := b.RawParse(
 		BiliLiveURL,
 		"xlive/general-interface/v1/rank/queryContributionRank",
 		"GET",
@@ -3150,5 +3150,12 @@ func (b *BiliClient) QueryContributionRank(uid, room_id int64, typ, sw string) e
 			"switch":    sw,
 		},
 	)
-	return err
+	if err != nil {
+		return nil, err
+	}
+	ret := &QueryContributionRankResp{}
+	if err = json.Unmarshal(resp.Data, ret); err != nil {
+		return nil, err
+	}
+	return ret, nil
 }
