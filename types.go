@@ -1575,6 +1575,7 @@ type LivePlayURL struct {
 	} `json:"durl"`
 	IsDashAuto bool `json:"is_dash_auto"`
 }
+
 type LiveAllGiftInfo struct {
 	List []*struct {
 		ID                int    `json:"id"`
@@ -1657,6 +1658,57 @@ type LiveAllGiftInfo struct {
 		Name  string `json:"name"`
 	} `json:"guard_resources"`
 }
+
+type GetEffectConfList struct {
+	ConfList []struct {
+		Type                  int    `json:"type"`
+		WebSvga               string `json:"web_svga"`
+		HorizontalSvga        string `json:"horizontal_svga"`
+		VerticalSvga          string `json:"vertical_svga"`
+		WebMp4                string `json:"web_mp4"`
+		WebMp4Json            string `json:"web_mp4_json"`
+		HorizontalMp4         string `json:"horizontal_mp4"`
+		VerticalMp4           string `json:"vertical_mp4"`
+		Id                    int    `json:"id"`
+		PlanPlatform          []int  `json:"plan_platform"`
+		BindGiftIds           []int  `json:"bind_gift_ids"`
+		WebMp4Md5             string `json:"web_mp4_md5"`
+		HorizontalMp4Md5      string `json:"horizontal_mp4_md5"`
+		VerticalMp4Md5        string `json:"vertical_mp4_md5"`
+		WebMp4Crc32           int64  `json:"web_mp4_crc32"`
+		HorizontalMp4Crc32    int64  `json:"horizontal_mp4_crc32"`
+		VerticalMp4Crc32      int64  `json:"vertical_mp4_crc32"`
+		WebMp4FileSize        int    `json:"web_mp4_file_size"`
+		HorizontalMp4FileSize int    `json:"horizontal_mp4_file_size"`
+		VerticalMp4FileSize   int    `json:"vertical_mp4_file_size"`
+		H265Conf              struct {
+			HorizontalMp4 struct {
+				Mp4         string `json:"mp4"`
+				Mp4Md5      string `json:"mp4_md5"`
+				Mp4Json     string `json:"mp4_json"`
+				Mp4Crc32    int64  `json:"mp4_crc32"`
+				Mp4FileSize int    `json:"mp4_file_size"`
+			} `json:"horizontal_mp4"`
+			VerticalMp4 struct {
+				Mp4         string `json:"mp4"`
+				Mp4Md5      string `json:"mp4_md5"`
+				Mp4Json     string `json:"mp4_json"`
+				Mp4Crc32    int64  `json:"mp4_crc32"`
+				Mp4FileSize int    `json:"mp4_file_size"`
+			} `json:"vertical_mp4"`
+		} `json:"h265_conf"`
+	} `json:"conf_list"`
+	FloatScResource []struct {
+		Title          string `json:"title"`
+		Type           int    `json:"type"`
+		LeftColor      string `json:"left_color"`
+		RightColor     string `json:"right_color"`
+		FaceBackground string `json:"face_background"`
+		TailBackground string `json:"tail_background"`
+		Id             int    `json:"id"`
+	} `json:"float_sc_resource"`
+}
+
 type Comment struct {
 	RPID int64 `json:"rpid"` // 评论rpid
 	OID  int64 `json:"oid"`  // 评论区对象id

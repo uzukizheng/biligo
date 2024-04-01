@@ -1272,6 +1272,30 @@ func (c *CommClient) LiveGetAllGiftInfo(roomID int64, areaID int, areaParentID i
 	return r, nil
 }
 
+// GetEffectConfList ...
+func (c *CommClient) GetEffectConfList(roomID int64, areaID int, areaParentID int) (*GetEffectConfList, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/general-interface/v1/fullScSpecialEffect/GetEffectConfList",
+		"GET",
+		map[string]string{
+			"room_id":        strconv.FormatInt(roomID, 10),
+			"platform":       "pc",
+			"source":         "live",
+			"area_id":        strconv.Itoa(areaID),
+			"area_parent_id": strconv.Itoa(areaParentID),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	var r = &GetEffectConfList{}
+	if err = json.Unmarshal(resp.Data, &r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}
+
 // CommentGetCount 获取评论总数
 //
 // oid: 对应类型的ID
