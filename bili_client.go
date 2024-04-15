@@ -33,6 +33,15 @@ type CookieAuth struct {
 	BUVID3          string // buvid3
 }
 
+// Cookie 获取字符串
+func (cu *CookieAuth) Cookie() string {
+	if cu == nil {
+		return ""
+	}
+	return fmt.Sprintf("DedeUserID=%s;SESSDATA=%s;DedeUserID__ckMd5=%s;bili_jct=%s",
+		cu.DedeUserID, cu.SESSDATA, cu.DedeUserIDCkMd5, cu.BiliJCT)
+}
+
 type BiliSetting struct {
 	// Cookie
 	Auth *CookieAuth
