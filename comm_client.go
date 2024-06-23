@@ -2304,3 +2304,71 @@ func (c *CommClient) GetUserEx(uid int64) (*GetUserExResp, error) {
 	}
 	return r, nil
 }
+
+type QueryAppDetailRsp struct {
+	AppInfo struct {
+		AppId                int64  `json:"app_id"`
+		Name                 string `json:"name"`
+		Icon                 string `json:"icon"`
+		PromotionCover       string `json:"promotion_cover"`
+		Type                 int    `json:"type"`
+		Status               int    `json:"status"`
+		Version              string `json:"version"`
+		DeveloperId          int    `json:"developer_id"`
+		DeveloperName        string `json:"developer_name"`
+		Abstract             string `json:"abstract"`
+		DetailedIntroduction string `json:"detailed_introduction"`
+		IsDefault            bool   `json:"is_default"`
+		Own                  bool   `json:"own"`
+		IconMark             string `json:"icon_mark"`
+		DownloadUrl          string `json:"download_url"`
+		LikeCount            int    `json:"like_count"`
+		IsUsingAnchors       []struct {
+			Avatar string `json:"avatar"`
+			Name   string `json:"name"`
+			RoomId int    `json:"room_id"`
+			Cover  string `json:"cover"`
+			Title  string `json:"title"`
+		} `json:"is_using_anchors"`
+		Level              int         `json:"level"`
+		PublishTime        int         `json:"publish_time"`
+		DeveloperFace      string      `json:"developer_face"`
+		RecommendImage     string      `json:"recommend_image"`
+		IsLike             bool        `json:"is_like"`
+		Id                 int         `json:"id"`
+		PcliveCover        string      `json:"pclive_cover"`
+		IsHq               int         `json:"is_hq"`
+		OwnCount           int         `json:"own_count"`
+		TagList            interface{} `json:"tag_list"`
+		ArchiveBvid        string      `json:"archive_bvid"`
+		UseInstruction     string      `json:"use_instruction"`
+		PreviewCovers      []string    `json:"preview_covers"`
+		Description        string      `json:"description"`
+		IsSupportObs       bool        `json:"is_support_obs"`
+		DeveloperBName     string      `json:"developer_b_name"`
+		DeveloperSign      string      `json:"developer_sign"`
+		DeveloperBLevel    int         `json:"developer_b_level"`
+		DeveloperLikeCount int         `json:"developer_like_count"`
+		DeveloperOwnCount  int         `json:"developer_own_count"`
+		CreateTime         int         `json:"create_time"`
+	} `json:"app_info"`
+}
+
+func (c *CommClient) QueryAppDetail(app_id int64) (*QueryAppDetailRsp, error) {
+	resp, err := c.RawParse(
+		BiliLiveURL,
+		"xlive/virtual-interface/v2/app/queryAppDetail",
+		"GET",
+		map[string]string{
+			"app_id": fmt.Sprint(app_id),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	r := &QueryAppDetailRsp{}
+	if err = json.Unmarshal(resp.Data, r); err != nil {
+		return nil, err
+	}
+	return r, nil
+}

@@ -781,3 +781,15 @@ func TestBiliClient_GetUserEx(t *testing.T) {
 	t.Logf("resp: %+v", r)
 	t.Logf("level: %d", r.Data.User.UserLevel)
 }
+
+func TestBiliClient_QueryAppDetail(t *testing.T) {
+	gResp, err := testCommClient.QueryAppDetail(1716707754657)
+	if err != nil {
+		t.Error(err)
+		t.FailNow()
+	}
+	for _, r := range gResp.AppInfo.IsUsingAnchors {
+		t.Log(r)
+	}
+	t.Log(gResp)
+}
