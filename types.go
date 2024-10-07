@@ -1577,72 +1577,7 @@ type LivePlayURL struct {
 }
 
 type LiveAllGiftInfo struct {
-	List []*struct {
-		ID                int    `json:"id"`
-		Name              string `json:"name"`
-		Price             int    `json:"price"`
-		Type              int    `json:"type"`
-		CoinType          string `json:"coin_type"`
-		BagGift           int    `json:"bag_gift"`
-		Effect            int    `json:"effect"`
-		CornerMark        string `json:"corner_mark"`
-		CornerBackground  string `json:"corner_background"`
-		Broadcast         int    `json:"broadcast"`
-		Draw              int    `json:"draw"`
-		StayTime          int    `json:"stay_time"`
-		AnimationFrameNum int    `json:"animation_frame_num"`
-		Desc              string `json:"desc"`
-		Rule              string `json:"rule"`
-		Rights            string `json:"rights"`
-		PrivilegeRequired int    `json:"privilege_required"`
-		CountMap          []*struct {
-			Num            int    `json:"num"`
-			Text           string `json:"text"`
-			WebSvga        string `json:"web_svga"`
-			VerticalSvga   string `json:"vertical_svga"`
-			HorizontalSvga string `json:"horizontal_svga"`
-			SpecialColor   string `json:"special_color"`
-			EffectID       int    `json:"effect_id"`
-		} `json:"count_map"`
-		ImgBasic             string `json:"img_basic"`
-		ImgDynamic           string `json:"img_dynamic"`
-		FrameAnimation       string `json:"frame_animation"`
-		GIF                  string `json:"gif"`
-		Webp                 string `json:"webp"`
-		FullScWeb            string `json:"full_sc_web"`
-		FullScHorizontal     string `json:"full_sc_horizontal"`
-		FullScVertical       string `json:"full_sc_vertical"`
-		FullScHorizontalSvga string `json:"full_sc_horizontal_svga"`
-		FullScVerticalSvga   string `json:"full_sc_vertical_svga"`
-		BulletHead           string `json:"bullet_head"`
-		BulletTail           string `json:"bullet_tail"`
-		LimitInterval        int    `json:"limit_interval"`
-		BindRUID             int    `json:"bind_ruid"`
-		BindRoomID           int    `json:"bind_roomid"`
-		GiftType             int    `json:"gift_type"`
-		ComboResourcesID     int    `json:"combo_resources_id"`
-		MaxSendLimit         int    `json:"max_send_limit"`
-		Weight               int    `json:"weight"`
-		GoodsID              int    `json:"goods_id"`
-		HasImagedGift        int    `json:"has_imaged_gift"`
-		LeftCornerText       string `json:"left_corner_text"`
-		LeftCornerBackground string `json:"left_corner_background"`
-		GiftBanner           struct {
-			AppPic         string `json:"app_pic"`
-			WebPic         string `json:"web_pic"`
-			LeftText       string `json:"left_text"`
-			LeftColor      string `json:"left_color"`
-			ButtonText     string `json:"button_text"`
-			ButtonColor    string `json:"button_color"`
-			ButtonPicColor string `json:"button_pic_color"`
-			JumpURL        string `json:"jump_url"`
-			JumpTo         int    `json:"jump_to"`
-			WebPicURL      string `json:"web_pic_url"`
-			WebJumpURL     string `json:"web_jump_url"`
-		} `json:"gift_banner"`
-		DiyCountMap int `json:"diy_count_map"`
-		EffectID    int `json:"effect_id"`
-	} `json:"list"`
+	List           []*LiveGiftInfo `json:"list"`
 	ComboResources []*struct {
 		ComboResourcesId int    `json:"combo_resources_id"`
 		ImgOne           string `json:"img_one"`
@@ -1657,6 +1592,73 @@ type LiveAllGiftInfo struct {
 		Img   string `json:"img"`
 		Name  string `json:"name"`
 	} `json:"guard_resources"`
+}
+
+type LiveGiftInfo struct {
+	ID                int    `json:"id"`
+	Name              string `json:"name"`
+	Price             int    `json:"price"`
+	Type              int    `json:"type"`
+	CoinType          string `json:"coin_type"`
+	BagGift           int    `json:"bag_gift"`
+	Effect            int    `json:"effect"`
+	CornerMark        string `json:"corner_mark"`
+	CornerBackground  string `json:"corner_background"`
+	Broadcast         int    `json:"broadcast"`
+	Draw              int    `json:"draw"`
+	StayTime          int    `json:"stay_time"`
+	AnimationFrameNum int    `json:"animation_frame_num"`
+	Desc              string `json:"desc"`
+	Rule              string `json:"rule"`
+	Rights            string `json:"rights"`
+	PrivilegeRequired int    `json:"privilege_required"`
+	CountMap          []*struct {
+		Num            int    `json:"num"`
+		Text           string `json:"text"`
+		WebSvga        string `json:"web_svga"`
+		VerticalSvga   string `json:"vertical_svga"`
+		HorizontalSvga string `json:"horizontal_svga"`
+		SpecialColor   string `json:"special_color"`
+		EffectID       int    `json:"effect_id"`
+	} `json:"count_map"`
+	ImgBasic             string `json:"img_basic"`
+	ImgDynamic           string `json:"img_dynamic"`
+	FrameAnimation       string `json:"frame_animation"`
+	GIF                  string `json:"gif"`
+	Webp                 string `json:"webp"`
+	FullScWeb            string `json:"full_sc_web"`
+	FullScHorizontal     string `json:"full_sc_horizontal"`
+	FullScVertical       string `json:"full_sc_vertical"`
+	FullScHorizontalSvga string `json:"full_sc_horizontal_svga"`
+	FullScVerticalSvga   string `json:"full_sc_vertical_svga"`
+	BulletHead           string `json:"bullet_head"`
+	BulletTail           string `json:"bullet_tail"`
+	LimitInterval        int    `json:"limit_interval"`
+	BindRUID             int    `json:"bind_ruid"`
+	BindRoomID           int    `json:"bind_roomid"`
+	GiftType             int    `json:"gift_type"`
+	ComboResourcesID     int    `json:"combo_resources_id"`
+	MaxSendLimit         int    `json:"max_send_limit"`
+	Weight               int    `json:"weight"`
+	GoodsID              int    `json:"goods_id"`
+	HasImagedGift        int    `json:"has_imaged_gift"`
+	LeftCornerText       string `json:"left_corner_text"`
+	LeftCornerBackground string `json:"left_corner_background"`
+	GiftBanner           struct {
+		AppPic         string `json:"app_pic"`
+		WebPic         string `json:"web_pic"`
+		LeftText       string `json:"left_text"`
+		LeftColor      string `json:"left_color"`
+		ButtonText     string `json:"button_text"`
+		ButtonColor    string `json:"button_color"`
+		ButtonPicColor string `json:"button_pic_color"`
+		JumpURL        string `json:"jump_url"`
+		JumpTo         int    `json:"jump_to"`
+		WebPicURL      string `json:"web_pic_url"`
+		WebJumpURL     string `json:"web_jump_url"`
+	} `json:"gift_banner"`
+	DiyCountMap int `json:"diy_count_map"`
+	EffectID    int `json:"effect_id"`
 }
 
 type EffectConfItem struct {
