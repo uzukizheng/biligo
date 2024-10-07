@@ -2472,41 +2472,41 @@ func (b *BiliClient) SendMessage(uid int64, content, devID string) (*SendMessage
 	return r, nil
 }
 
-// SendMessage 发文字消息
-func (b *BiliClient) SendPictureMessage(uid int64, content, devID string) (*SendMessageResp, error) {
-	if devID == "" {
-		devID = uuid.NewV4().String()
-	}
-	ts := time.Now().Unix()
-	resp, err := b.UploadParse(
-		BiliVcURL,
-		fmt.Sprintf("web_im/v1/web_im/send_msg?w_sender_uid=%v&w_receiver_id=%v&w_dev_id=%v&w_rid=%v&wts=%s",
-			b.auth.DedeUserID, uid, devID),
-		map[string]string{
-			"msg[sender_uid]":       b.auth.DedeUserID,
-			"msg[receiver_id]":      fmt.Sprint(uid),
-			"msg[receiver_type]":    "1",
-			"msg[msg_type]":         "1",
-			"msg[msg_status]":       "0",
-			"msg[content]":          `{"content":"` + content + `"}`,
-			"msg[timestamp]":        fmt.Sprint(time.Now().Unix()),
-			"msg[new_face_version]": "0",
-			"msg[dev_id]":           devID,
-			"from_firework":         "0",
-			"build":                 "0",
-			"mobi_app":              "web",
-		},
-		[]*FileUpload{},
-	)
-	if err != nil {
-		return nil, err
-	}
-	var r = &SsendMessageResp{}
-	if err = json.Unmarshal(resp.Data, &r); err != nil {
-		return nil, err
-	}
-	return r, nil
-}
+//// SendMessage 发文字消息
+//func (b *BiliClient) SendPictureMessage(uid int64, content, devID string) (*SendMessageResp, error) {
+//	if devID == "" {
+//		devID = uuid.NewV4().String()
+//	}
+//	ts := time.Now().Unix()
+//	resp, err := b.UploadParse(
+//		BiliVcURL,
+//		fmt.Sprintf("web_im/v1/web_im/send_msg?w_sender_uid=%v&w_receiver_id=%v&w_dev_id=%v&w_rid=%v&wts=%s",
+//			b.auth.DedeUserID, uid, devID),
+//		map[string]string{
+//			"msg[sender_uid]":       b.auth.DedeUserID,
+//			"msg[receiver_id]":      fmt.Sprint(uid),
+//			"msg[receiver_type]":    "1",
+//			"msg[msg_type]":         "1",
+//			"msg[msg_status]":       "0",
+//			"msg[content]":          `{"content":"` + content + `"}`,
+//			"msg[timestamp]":        fmt.Sprint(time.Now().Unix()),
+//			"msg[new_face_version]": "0",
+//			"msg[dev_id]":           devID,
+//			"from_firework":         "0",
+//			"build":                 "0",
+//			"mobi_app":              "web",
+//		},
+//		[]*FileUpload{},
+//	)
+//	if err != nil {
+//		return nil, err
+//	}
+//	var r = &SsendMessageResp{}
+//	if err = json.Unmarshal(resp.Data, &r); err != nil {
+//		return nil, err
+//	}
+//	return r, nil
+//}
 
 func getMixinKey(e string) string {
 	t := []rune{}
