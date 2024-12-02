@@ -3216,3 +3216,23 @@ func (b *BiliClient) QueryContributionRank(uid, room_id int64, typ, sw string) (
 	}
 	return ret, nil
 }
+
+// GetInfoByRoom 查房间信息
+func (b *BiliClient) GetInfoByRoom(roomID int64) (*GetInfoByRoomResp, error) {
+	resp, err := b.RawParse(
+		BiliLiveURL,
+		"xlive/web-room/v1/index/getInfoByRoom",
+		"GET",
+		map[string]string{
+			"room_id": fmt.Sprint(roomID),
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	ret := &GetInfoByRoomResp{}
+	if err = json.Unmarshal(resp.Data, ret); err != nil {
+		return nil, err
+	}
+	return ret, nil
+}
